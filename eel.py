@@ -18,16 +18,17 @@ class Background(pygame.sprite.Sprite):
 	def __init__(self,data,size,mode,location):
 		pygame.sprite.Sprite.__init__(self)
 		self.image = pygame.image.fromstring(data,size,mode)
+		infoObject = pygame.display.Info()
+		self.image = pygame.transform.scale(self.image, (infoObject.current_w,infoObject.current_h))
 		self.rect = self.image.get_rect()
 		self.rect.left, self.rect.top = location
 
 data,size,mode = screenshot()
-BackGround = Background(data,size,mode,[0,0])
 
 pygame.init()
-size = width, height = 320,240
 screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
 screen.fill([255,255,255])
+BackGround = Background(data,size,mode,[0,0])
 screen.blit(BackGround.image, BackGround.rect)
 red = 255,0,0
 
