@@ -37,21 +37,19 @@ class Background(pygame.sprite.Sprite):
 		self.rect.left, self.rect.top = location
 
 class Player:
-	x = 0
-	y = 0
+	length = 10
+	x = [0 for i in range(length)]
+	y = [0 for i in range(length)]
 	speed = 10
 
-	def moveRight(self):
-		self.x = self.x + self.speed
-
-	def moveLeft(self):
-		self.x = self.x - self.speed
-
-	def moveUp(self):
-		self.y = self.y - self.speed
-
-	def moveDown(self):
-		self.y = self.y + self.speed
+	def move(self,direction):
+		for i in range(self.length-1,0,-1):
+			self.x[i]=self.x[i-1]
+			self.y[i]=self.y[i-1]
+		if direction<=1:
+			self.x[0] += self.speed*(-1)**direction
+		else:
+			self.y[0] += self.speed*(-1)**direction
 
 # retrieves screenshot data
 data,size,mode = screenshot()
@@ -63,7 +61,7 @@ screen.fill([255,255,255])
 infoObject = pygame.display.Info()
 BackGround = Background(data,size,mode,[0,0])
 playerSprite = pygame.image.load(os.path.join(image_path, 'cursor.png')).convert_alpha()
-playerSprite = pygame.transform.scale(playerSprite, (13,20))
+playerSprite = pygame.transform.scale(playerSprite, (13,19))
 screen.blit(BackGround.image, BackGround.rect)
 red = 255,0,0
 player = Player()
@@ -75,33 +73,29 @@ while 1:
 			sys.exit()
 		elif event.type == pygame.KEYDOWN:
 			if event.key == pygame.K_RIGHT:
-				player.moveRight()
-				current = 0
+				if current!=1:
+					current = 0
 			elif event.key == pygame.K_LEFT:
-				player.moveLeft()
-				current = 1
-			elif event.key == pygame.K_UP:
-				player.moveUp()
-				current = 2
+				if current!=0:
+					current = 1
 			elif event.key == pygame.K_DOWN:
-				player.moveDown()
-				current = 3
-	if current == 0:
-		player.moveRight()
-	elif current == 1:
-		player.moveLeft()
-	elif current == 2:
-		player.moveUp()
-	elif current == 3:	
-		player.moveDown()
-	if player.x>=infoObject.current_w:
-		player.x=0
-	elif player.x<0:
-		player.x=infoObject.current_w
-	if player.y>=infoObject.current_h:
-		player.y=0
-	elif player.y<0:
-		player.y=infoObject.current_h
+				if current!=3:
+					current = 2
+			elif event.key == pygame.K_UP:
+				if current!=2:
+					current = 3
+			elif event.key == pygame.K_ESC:
+				sys.exit()
+	player.move(current)
+	if player.x[0]>=infoObject.current_w:
+		player.x[0]=0
+	elif player.x[0]<0:
+		player.x[0]=infoObject.current_w-10
+	if player.y[0]>=infoObject.current_h:
+		player.y[0]=0
+	elif player.y[0]<0:
+		player.y[0]=infoObject.current_h-10
 	screen.blit(BackGround.image, BackGround.rect)
-	screen.blit(playerSprite,(player.x,player.y))
+	for i in range(player.length):
+		screen.blit(playerSprite,(player.x[i],player.y[i]))
 	pygame.display.flip()
