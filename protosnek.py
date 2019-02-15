@@ -66,18 +66,20 @@ class Apple:
 def scrnMod(scrn):
 	scrn = scrn.convert('L')
 	scrn = scrn.convert('RGB')
-	scrn = RGBTransform().mix_with((255,0,125),factor=.2).applied_to(scrn)
+	# scrn = ImageOps.invert(scrn)
+	scrn = RGBTransform().mix_with((255,255,255),factor=.1).applied_to(scrn)
+	scrn = RGBTransform().mix_with((0,0,255),factor=.1).applied_to(scrn)
 	data = scrn.tobytes()
 	size = scrn.size
 	mode = scrn.mode
 	new = pygame.image.fromstring(data,size,mode)
-	new = pygame.transform.scale(new, (int(round(infoObject.current_w)),int(round(infoObject.current_h))))
+	new = pygame.transform.scale(new, (int(round(infoObject.current_w*1.005)),int(round(infoObject.current_h*1.005))))
 	return new
-# retrieves screenshot data
-# print("Taking screenshot in...")
-# for i in range(5):
-# 	print(5-i)
-# 	time.sleep(1)
+#retrieves screenshot data
+print("Taking screenshot in...")
+for i in range(5):
+	print(5-i)
+	time.sleep(1)
 data,size,mode,scr = screenshot()
 
 # initializes pygame in fullscreen and sets screen background.
@@ -103,16 +105,16 @@ while 1:
 		if event.type == pygame.QUIT:
 			sys.exit()
 		elif event.type == pygame.KEYDOWN:
-			if event.key == pygame.K_RIGHT:
+			if event.key == pygame.K_l:
 				if current!=1:
 					current = 0
-			elif event.key == pygame.K_LEFT:
+			elif event.key == pygame.K_a:
 				if current!=0:
 					current = 1
-			elif event.key == pygame.K_DOWN:
+			elif event.key == pygame.K_m:
 				if current!=3:
 					current = 2
-			elif event.key == pygame.K_UP:
+			elif event.key == pygame.K_w:
 				if current!=2:
 					current = 3
 			elif event.key == pygame.K_ESCAPE:
@@ -151,4 +153,5 @@ while 1:
 	screen.blit(BackGround.image, BackGround.rect)
 	for i in range(player.length):
 		screen.blit(playerSprite,(player.coords[i][0],player.coords[i][1]),(player.coords[i][0],player.coords[i][1],20,20))
+	print(apple.coords)
 	pygame.display.flip()
