@@ -5,9 +5,13 @@ Takes Screenshot and Fullscreens
 """
 
 import pygame
-from PIL import Image, ImageGrab, ImageDraw, ImageStat, ImageFilter, ImageOps, ImageEnhance
+from PIL import Image as Im
+from PIL import ImageGrab, ImageDraw, ImageStat, ImageFilter, ImageOps, ImageEnhance
 import sys
 import os
+import time
+from transforms import RGBTransform
+import random
 
 current_path = os.path.dirname(__file__) # Where your .py file is located
 resource_path = os.path.join(current_path, 'resources') # The resource folder path
@@ -23,7 +27,7 @@ def screenshot():
 	data = scr.tobytes()
 	size = scr.size
 	mode = scr.mode
-	return data,size,mode
+	return data,size,mode,scr
 
 # Background class acts as the "sprite" image behind all other game elements 
 # https://stackoverflow.com/questions/28005641/how-to-add-a-background-image-into-pygame/28005796
@@ -38,21 +42,43 @@ class Background(pygame.sprite.Sprite):
 
 class Player:
 	length = 10
-	x = [0 for i in range(length)]
-	y = [0 for i in range(length)]
-	speed = 10
+	coords = [[(10-i)*20,0] for i in range(length)]
+	speed = 20
 
 	def move(self,direction):
+		while len(self.coords)!=self.length:
+			self.coords.append([0,0])
 		for i in range(self.length-1,0,-1):
-			self.x[i]=self.x[i-1]
-			self.y[i]=self.y[i-1]
+			self.coords[i][0]=self.coords[i-1][0]
+			self.coords[i][1]=self.coords[i-1][1]
 		if direction<=1:
-			self.x[0] += self.speed*(-1)**direction
+			self.coords[0][0] += self.speed*(-1)**direction
 		else:
-			self.y[0] += self.speed*(-1)**direction
+			self.coords[0][1] += self.speed*(-1)**direction
 
+class Apple:
+	def __init__(self):
+		self.coords = [random.randrange(20,infoObject.current_w,20)-20,random.randrange(20,infoObject.current_h,20)-20]
+	def reroll(self):
+		self.coords = [random.randrange(20,infoObject.current_w,20)-20,random.randrange(20,infoObject.current_h,20)-20]
+
+
+def scrnMod(scrn):
+	scrn = scrn.convert('L')
+	scrn = scrn.convert('RGB')
+	scrn = RGBTransform().mix_with((255,0,125),factor=.2).applied_to(scrn)
+	data = scrn.tobytes()
+	size = scrn.size
+	mode = scrn.mode
+	new = pygame.image.fromstring(data,size,mode)
+	new = pygame.transform.scale(new, (int(round(infoObject.current_w)),int(round(infoObject.current_h))))
+	return new
 # retrieves screenshot data
-data,size,mode = screenshot()
+# print("Taking screenshot in...")
+# for i in range(5):
+# 	print(5-i)
+# 	time.sleep(1)
+data,size,mode,scr = screenshot()
 
 # initializes pygame in fullscreen and sets screen background.
 pygame.init()
@@ -60,11 +86,16 @@ screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
 screen.fill([255,255,255])
 infoObject = pygame.display.Info()
 BackGround = Background(data,size,mode,[0,0])
-playerSprite = pygame.image.load(os.path.join(image_path, 'cursor.png')).convert_alpha()
-playerSprite = pygame.transform.scale(playerSprite, (13,19))
+appleSprite = pygame.image.load(os.path.join(image_path, 'cursor.png')).convert_alpha()
+appleSprite = pygame.transform.scale(appleSprite, (13,19))
 screen.blit(BackGround.image, BackGround.rect)
 red = 255,0,0
 player = Player()
+apple = Apple()
+while apple.coords in player.coords:
+	apple.reroll()
+print(apple.coords)
+playerSprite = scrnMod(scr)
 current = 0
 
 while 1:
@@ -84,18 +115,40 @@ while 1:
 			elif event.key == pygame.K_UP:
 				if current!=2:
 					current = 3
-			elif event.key == pygame.K_ESC:
+			elif event.key == pygame.K_ESCAPE:
 				sys.exit()
 	player.move(current)
-	if player.x[0]>=infoObject.current_w:
-		player.x[0]=0
-	elif player.x[0]<0:
-		player.x[0]=infoObject.current_w-10
-	if player.y[0]>=infoObject.current_h:
-		player.y[0]=0
-	elif player.y[0]<0:
-		player.y[0]=infoObject.current_h-10
+	if player.coords[0][0]>=infoObject.current_w:
+		player.coords[0][0]=0
+	elif player.coords[0][0]<0:
+		player.coords[0][0]=infoObject.current_w-20
+	if player.coords[0][1]>=infoObject.current_h:
+		player.coords[0][1]=0
+	elif player.coords[0][1]<0:
+		player.coords[0][1]=infoObject.current_h-20
+	if player.coords[0] in player.coords[1:-1]:
+		break
+	screen.blit(BackGround.image, BackGround.rect)
+	screen.blit(appleSprite,(apple.coords[0],apple.coords[1]))
+	print(len(player.coords))
+	for i in range(player.length):
+		screen.blit(playerSprite,(player.coords[i][0],player.coords[i][1]),(player.coords[i][0],player.coords[i][1],20,20))
+	if player.coords[0] == apple.coords:
+		player.length+=2
+		apple.reroll()
+		while apple.coords in player.coords:
+			apple.reroll()
+	print(apple.coords)
+	pygame.display.flip()
+
+while 1:
+	for event in pygame.event.get():
+		if event.type == pygame.QUIT:
+			sys.exit()
+		elif event.type == pygame.KEYDOWN:
+			if event.key == pygame.K_ESCAPE:
+				sys.exit()
 	screen.blit(BackGround.image, BackGround.rect)
 	for i in range(player.length):
-		screen.blit(playerSprite,(player.x[i],player.y[i]))
+		screen.blit(playerSprite,(player.coords[i][0],player.coords[i][1]),(player.coords[i][0],player.coords[i][1],20,20))
 	pygame.display.flip()
