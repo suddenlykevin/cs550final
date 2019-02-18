@@ -17,7 +17,6 @@ current_path = os.path.dirname(__file__) # Where your .py file is located
 resource_path = os.path.join(current_path, 'resources') # The resource folder path
 image_path = os.path.join(resource_path, 'images') # The image folder path
 
-# Screenshot function takes screenshot and converts it to data that pygame can read
 def screenshot():
 	im= ImageGrab.grab(bbox=None)
 	#http://www.varesano.net/blog/fabio/capturing%20screen%20image%20python%20and%20pil%20windows
@@ -27,23 +26,35 @@ def screenshot():
 	data = scr.tobytes()
 	size = scr.size
 	mode = scr.mode
-	return data,size,mode,scr
+	return data, size, mode
 
 # Background class acts as the "sprite" image behind all other game elements 
 # https://stackoverflow.com/questions/28005641/how-to-add-a-background-image-into-pygame/28005796
 class Background(pygame.sprite.Sprite):
 	def __init__(self,data,size,mode,location):
 		pygame.sprite.Sprite.__init__(self)
+		self.data,self.size,self.mode = data,size,mode
 		self.image = pygame.image.fromstring(data,size,mode)
 		# https://stackoverflow.com/questions/19954469/how-to-get-the-resolution-of-a-monitor-in-pygame
 		self.image = pygame.transform.scale(self.image, (infoObject.current_w,infoObject.current_h))
 		self.rect = self.image.get_rect()
 		self.rect.left, self.rect.top = location
 
+	def scrnMod(self):
+		scrn = RGBTransform().mix_with((255,255,255),factor=.12).applied_to(Im.frombytes(self.mode,self.size,self.data))
+		scrn = RGBTransform().mix_with((0,0,255),factor=.12).applied_to(scrn)
+		data = scrn.tobytes()
+		size = scrn.size
+		mode = scrn.mode
+		self.new = pygame.image.fromstring(data,size,mode)
+		self.new = pygame.transform.scale(self.new, (int(round(infoObject.current_w*1.005)),int(round(infoObject.current_h*1.005))))
+		return self.new
+
 class Player:
-	length = 10
-	coords = [[(10-i)*20,0] for i in range(length)]
-	speed = 20
+	def __init__(self):
+		self.length = 10
+		self.coords = [[(10-i)*20,0] for i in range(self.length)]
+		self.speed = 20
 
 	def move(self,direction):
 		while len(self.coords)!=self.length:
@@ -59,31 +70,19 @@ class Player:
 class Apple:
 	def __init__(self):
 		self.coords = [random.randrange(20,infoObject.current_w,20)-20,random.randrange(20,infoObject.current_h,20)-20]
+
 	def reroll(self):
 		self.coords = [random.randrange(20,infoObject.current_w,20)-20,random.randrange(20,infoObject.current_h,20)-20]
 
-
-def scrnMod(scrn):
-	scrn = scrn.convert('L')
-	scrn = scrn.convert('RGB')
-	# scrn = ImageOps.invert(scrn)
-	scrn = RGBTransform().mix_with((255,255,255),factor=.1).applied_to(scrn)
-	scrn = RGBTransform().mix_with((0,0,255),factor=.1).applied_to(scrn)
-	data = scrn.tobytes()
-	size = scrn.size
-	mode = scrn.mode
-	new = pygame.image.fromstring(data,size,mode)
-	new = pygame.transform.scale(new, (int(round(infoObject.current_w*1.005)),int(round(infoObject.current_h*1.005))))
-	return new
 #retrieves screenshot data
+pygame.init()
 print("Taking screenshot in...")
-for i in range(5):
-	print(5-i)
-	time.sleep(1)
-data,size,mode,scr = screenshot()
+# for i in range(5):
+# 	print(5-i)
+# 	time.sleep(1)
+data,size,mode = screenshot()
 
 # initializes pygame in fullscreen and sets screen background.
-pygame.init()
 screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
 screen.fill([255,255,255])
 infoObject = pygame.display.Info()
@@ -96,8 +95,7 @@ player = Player()
 apple = Apple()
 while apple.coords in player.coords:
 	apple.reroll()
-print(apple.coords)
-playerSprite = scrnMod(scr)
+playerSprite = BackGround.scrnMod()
 current = 0
 
 while 1:
