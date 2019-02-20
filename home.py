@@ -1,4 +1,4 @@
-"""
+"""`
 Screenshot Base
 Takes Screenshot and Fullscreens
 
@@ -84,11 +84,13 @@ class Home:
 					elif event.key == pygame.K_2:
 						br = Breakout()
 						br.main(self.screen,self.cursor,self.BackGround)
+					elif event.key == pygame.K_ESC:
+						sys.exit()
 			pygame.display.flip()
 
 print("Capturing screen in...")
-for i in range(3):
-	print(str(3-i)+"...")
-	time.sleep(1)
+# for i in range(3):
+# 	print(str(3-i)+"...")
+# 	time.sleep(1)
 start = Home()
 start.play()

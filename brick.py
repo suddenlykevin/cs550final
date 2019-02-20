@@ -27,12 +27,14 @@ class Breakout():
 		size = width, height = int(infosize.current_w), int(infosize.current_h)
 
 		bat = pygame.image.load(os.path.join(image_path, 'editbat.png')).convert_alpha()
+		bat = pygame.transform.scale(bat, (int(infosize.current_w*0.1),int(infosize.current_h*0.05)))
 		batrect = bat.get_rect()
 
 		ball = cursor
 		ball.set_colorkey((255, 255, 255))
+		# ball = pygame.transform.scale(ball, (15,22))
 		ballrect = ball.get_rect()
-	   
+
 		wall = Wall()
 		wall.build_wall(width)
 
@@ -49,7 +51,7 @@ class Breakout():
 		while 1:
 
 			# 60 frames per second
-			clock.tick(120)
+			clock.tick(60)
 
 			# process key presses
 			for event in pygame.event.get():
@@ -68,26 +70,29 @@ class Breakout():
 							batrect.right = width
 
 			# check if bat has hit ball    
-			if ballrect.bottom >= batrect.top and ballrect.bottom <= batrect.bottom and ballrect.right >= batrect.left and ballrect.left <= batrect.right:
+			if ballrect.bottom >= batrect.top and \
+			   ballrect.bottom <= batrect.bottom and \
+			   ballrect.right >= batrect.left and \
+			   ballrect.left <= batrect.right:
 				yspeed = -yspeed                          
 				offset = ballrect.center[0] - batrect.center[0]                          
 				# offset > 0 means ball has hit RHS of bat                   
 				# vary angle of ball depending on where ball hits bat                      
 				if offset > 0:
-					if offset > 30:
+					if offset > 30:  
 						xspeed = 7
-					elif offset > 23:
+					elif offset > 23:                 
 						xspeed = 6
 					elif offset > 17:
 						xspeed = 5 
 				else:  
-					if offset < -30:
+					if offset < -30:                             
 						xspeed = -7
 					elif offset < -23:
 						xspeed = -6
 					elif xspeed < -17:
-						xspeed = -5
-
+						xspeed = -5     
+					  
 			# move bat/ball
 			ballrect = ballrect.move(xspeed, yspeed)
 			if ballrect.left < 0 or ballrect.right > width:
@@ -110,8 +115,8 @@ class Breakout():
 				ballrect.center = width * random.random(), height / 3   
 
 				if lives == 0:                    
-					msg = pygame.font.Font(None,70).render("Game Over", True, (0,255,255))
-					screen.blit(backgroundfile, backgroundfile.get_rect())
+					msg = pygame.font.Font(None,70).render("Game Over! Score: " + str(score), True, (0,255,255))
+					screen.blit(BackGround.image, BackGround.rect)
 					msgrect = msg.get_rect()
 					msgrect = msgrect.move(width / 2 - (msgrect.center[0]), height / 3)
 					screen.blit(msg, msgrect)
@@ -126,11 +131,11 @@ class Breakout():
 								sys.exit()
 							if event.type == pygame.KEYDOWN:
 								if event.key == pygame.K_ESCAPE:
-									sys.exit()
+									return
 								if not (event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT):                                    
 									restart = True      
 						if restart:                   
-							screen.blit(backgroundfile, backgroundfile.get_rect())
+							screen.blit(BackGround.image, BackGround.rect)
 							wall.build_wall(width)
 							lives = max_lives
 							score = 0
@@ -157,10 +162,7 @@ class Breakout():
 				wall.brickrect[index:index + 1] = []
 				score += 10
 				
-			backgroundfile = BackGround.image
-			infoObject = pygame.display.Info()
-			backgroundfile= pygame.transform.scale(backgroundfile, (infoObject.current_w,infoObject.current_h))
-			screen.blit(backgroundfile, backgroundfile.get_rect())
+			screen.blit(BackGround.image, BackGround.rect)
 			scoretext = pygame.font.Font(None,40).render(str(score), True, (0,255,255))
 			scoretextrect = scoretext.get_rect()
 			scoretextrect = scoretextrect.move(width - scoretextrect.right, 0)
