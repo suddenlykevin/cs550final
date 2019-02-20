@@ -45,8 +45,7 @@ class Breakout():
 		yspeed = yspeed_init
 		lives = max_lives
 		clock = pygame.time.Clock()
-		pygame.key.set_repeat(1,30)       
-		pygame.mouse.set_visible(0)       # turn off mouse pointer
+		pygame.key.set_repeat(1,30)
 
 		while 1:
 

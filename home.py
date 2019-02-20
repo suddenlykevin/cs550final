@@ -64,9 +64,10 @@ class Home:
 		self.screen.fill([255,255,255])
 		self.BackGround = Background(self.data,self.size,self.mode,[0,0])
 		self.screen.blit(self.BackGround.image, self.BackGround.rect)
+		pygame.mouse.set_visible(0)
 		if platform == "darwin":
 			self.cursor = pygame.image.load(os.path.join(image_path, 'cursor1.png')).convert_alpha()
-			self.cursor = pygame.transform.scale(self.cursor, (int(pygame.display.Info().current_w*0.0065),int(pygame.display.Info().current_w*0.00975)))
+			self.cursor = pygame.transform.scale(self.cursor, (15,22))
 		elif platform == "win32" or platform == "win64":
 			self.cursor = pygame.image.load(os.path.join(image_path, 'cursor.png')).convert_alpha()
 			self.cursor = pygame.transform.scale(self.cursor, (int(pygame.display.Info().current_w*0.0065),int(pygame.display.Info().current_w*0.00975)))
@@ -81,10 +82,12 @@ class Home:
 					if event.key == pygame.K_1:
 						snake = Snake(self.screen,self.cursor,self.BackGround)
 						snake.play()
+						time.sleep(1)
 					elif event.key == pygame.K_2:
 						br = Breakout()
 						br.main(self.screen,self.cursor,self.BackGround)
-					elif event.key == pygame.K_ESC:
+						time.sleep(1)
+					elif event.key == pygame.K_ESCAPE:
 						sys.exit()
 			pygame.display.flip()
 

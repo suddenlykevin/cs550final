@@ -22,10 +22,12 @@ class Player:
 		self.length = 10
 		self.coords = [[(10-i)*20,0] for i in range(self.length)]
 		self.speed = 20
+		self.score = 0
 
 	def move(self,direction):
 		while len(self.coords)!=self.length:
 			self.coords.append([0,0])
+		self.score = (self.length-10)*10
 		for i in range(self.length-1,0,-1):
 			self.coords[i][0]=self.coords[i-1][0]
 			self.coords[i][1]=self.coords[i-1][1]
@@ -86,7 +88,6 @@ class Snake:
 				return
 			self.screen.blit(self.BackGround.image, self.BackGround.rect)
 			self.screen.blit(self.appleSprite,(self.apple.coords[0],self.apple.coords[1]))
-			print(len(self.player.coords))
 			for i in range(self.player.length):
 				self.screen.blit(self.playerSprite,(self.player.coords[i][0],self.player.coords[i][1]),(self.player.coords[i][0],self.player.coords[i][1],20,20))
 			if self.player.coords[0] == self.apple.coords:
@@ -94,7 +95,10 @@ class Snake:
 				self.apple.reroll()
 				while self.apple.coords in self.player.coords:
 					self.apple.reroll()
-			print(self.apple.coords)
+			scoretext = pygame.font.Font(None,40).render(str(self.player.score), True, (0,255,255))
+			scoretextrect = scoretext.get_rect()
+			scoretextrect = scoretextrect.move(pygame.display.Info().current_w - scoretextrect.right, 0)
+			self.screen.blit(scoretext, scoretextrect)
 			pygame.display.flip()
 	def pause(self, status):
 		while 1:
@@ -109,5 +113,10 @@ class Snake:
 			self.screen.blit(self.BackGround.image, self.BackGround.rect)
 			for i in range(self.player.length):
 				self.screen.blit(self.playerSprite,(self.player.coords[i][0],self.player.coords[i][1]),(self.player.coords[i][0],self.player.coords[i][1],20,20))
-			print(self.apple.coords)
+			if status == 1:
+				msg = pygame.font.Font(None,70).render("Game Over! Score: " + str(self.player.score), True, (0,255,255))
+				self.screen.blit(self.BackGround.image, self.BackGround.rect)
+				msgrect = msg.get_rect()
+				msgrect = msgrect.move(pygame.display.Info().current_w / 2 - (msgrect.center[0]), pygame.display.Info().current_h / 3)
+				self.screen.blit(msg, msgrect)
 			pygame.display.flip()
