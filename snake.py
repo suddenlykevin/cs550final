@@ -1,6 +1,8 @@
 """
-Screenshot Base
-Takes Screenshot and Fullscreens
+Snake
+
+Functionality derived from tutorial:
+https://pythonspot.com/snake-with-pygame/
 
 """
 
@@ -73,7 +75,8 @@ class Snake:
 						if self.current!=2:
 							self.current = 3
 					elif event.key == pygame.K_ESCAPE:
-						sys.exit()
+						pygame.display.iconify()
+						self.pause(0)
 			self.player.move(self.current)
 			if self.player.coords[0][0]>=pygame.display.Info().current_w:
 				self.player.coords[0][0]=0
@@ -88,6 +91,7 @@ class Snake:
 				return
 			self.screen.blit(self.BackGround.image, self.BackGround.rect)
 			self.screen.blit(self.appleSprite,(self.apple.coords[0],self.apple.coords[1]))
+			# https://stackoverflow.com/questions/32781858/pygame-blit-part-of-an-imagebackground-image
 			for i in range(self.player.length):
 				self.screen.blit(self.playerSprite,(self.player.coords[i][0],self.player.coords[i][1]),(self.player.coords[i][0],self.player.coords[i][1],20,20))
 			if self.player.coords[0] == self.apple.coords:

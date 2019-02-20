@@ -1,6 +1,10 @@
 """`
-Screenshot Base
-Takes Screenshot and Fullscreens
+Home Screen
+
+Universal Sources:
+https://www.pygame.org/docs/
+Python Package Project: Pygame by Mia
+https://pillow.readthedocs.io/en/3.3.x/reference/Image.html
 
 """
 
@@ -46,6 +50,7 @@ class Background(pygame.sprite.Sprite):
 		self.rect.left, self.rect.top = location
 
 	def scrnMod(self):
+		# https://stackoverflow.com/questions/32578346/how-to-change-color-of-image-using-python
 		scrn = RGBTransform().mix_with((255,255,255),factor=.12).applied_to(Im.frombytes(self.mode,self.size,self.data))
 		scrn = RGBTransform().mix_with((0,0,255),factor=.12).applied_to(scrn)
 		data = scrn.tobytes()
