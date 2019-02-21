@@ -47,6 +47,7 @@ class Apple:
 
 class Snake:
 	def __init__(self, screen, cursor, BackGround):
+		pygame.mouse.set_visible(0)
 		self.screen = screen
 		self.BackGround = BackGround
 		self.appleSprite = cursor
@@ -54,7 +55,7 @@ class Snake:
 		self.apple = Apple()
 		while self.apple.coords in self.player.coords:
 			self.apple.reroll()
-		self.playerSprite = BackGround.scrnMod()
+		self.playerSprite = BackGround.scrnMod(0)
 		self.current = 0
 	def play(self):
 		while 1:

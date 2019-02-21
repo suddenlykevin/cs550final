@@ -17,6 +17,7 @@ image_path = os.path.join(resource_path, 'images') # The image folder path
 class Breakout():
    
 	def main(self, screen, cursor, BackGround):
+		pygame.mouse.set_visible(0)
 		xspeed_init = 15
 		yspeed_init = 15
 		max_lives = 5
