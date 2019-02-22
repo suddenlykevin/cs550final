@@ -1,3 +1,4 @@
+
 """ 
 Code based on Breakout V 0.1 June 2009 by John Cheetham. Can be found at http://www.johncheetham.com/projects/breakout. 
 
@@ -16,24 +17,23 @@ image_path = os.path.join(resource_path, 'images') # The image folder path
 
 class Breakout():
    
-	def main(self, screen, cursor, BackGround):
-		pygame.mouse.set_visible(0)
+	def main(self, screen, cursor, BackGround,mac): #Set some inital constants 
 		xspeed_init = 15
 		yspeed_init = 15
 		max_lives = 5
 		bat_speed = 30
 		score = 0 
 
-		infosize = pygame.display.Info()
+		infosize = pygame.display.Info() #info to make the display the correct size 
 		size = width, height = int(infosize.current_w), int(infosize.current_h)
 
-		bat = pygame.image.load(os.path.join(image_path, 'editbat.png')).convert_alpha()
+		bat = pygame.image.load(os.path.join(image_path, 'editbat.png')).convert_alpha() #loading and scalling the bat 
 		bat = pygame.transform.scale(bat, (int(infosize.current_w*0.1),int(infosize.current_h*0.05)))
 		batrect = bat.get_rect()
 
-		ball = cursor
+		ball = cursor #the "ball" is the cursor determined in the home function and is different for different operating systems
 		ball.set_colorkey((255, 255, 255))
-		# ball = pygame.transform.scale(ball, (15,22))
+		
 		ballrect = ball.get_rect()
 
 		wall = Wall()
@@ -46,7 +46,8 @@ class Breakout():
 		yspeed = yspeed_init
 		lives = max_lives
 		clock = pygame.time.Clock()
-		pygame.key.set_repeat(1,30)
+		pygame.key.set_repeat(1,30)       
+		pygame.mouse.set_visible(0)       # turn off mouse pointer
 
 		while 1:
 
@@ -114,16 +115,18 @@ class Breakout():
 						 
 				ballrect.center = width * random.random(), height / 3   
 
+				#prcesses losing 
 				if lives == 0:                    
-					msg = pygame.font.Font(None,70).render("Game Over! Score: " + str(score), True, (0,255,255))
+					msg = pygame.font.Font(None,50).render("Game Over! Score: " + str(score), True, (0,255,255))
 					screen.blit(BackGround.image, BackGround.rect)
 					msgrect = msg.get_rect()
-					msgrect = msgrect.move(width / 2 - (msgrect.center[0]), height / 3)
+					msgrect = msgrect.move((msgrect.center[0]), 0)
 					screen.blit(msg, msgrect)
 					pygame.display.flip()
 					# process key presses
 					#     - ESC to quit
 					#     - any other key to restart game
+					#Restarts game
 					while 1:
 						restart = False
 						for event in pygame.event.get():
@@ -141,6 +144,7 @@ class Breakout():
 							score = 0
 							break
 			
+			#allows for bouncing off sides of the screen
 			if xspeed < 0 and ballrect.left < 0:
 				xspeed = -xspeed                                
 			
@@ -161,13 +165,15 @@ class Breakout():
 						 
 				wall.brickrect[index:index + 1] = []
 				score += 10
-				
+			#continue to blit the background image (screenshot)	and the score text 
 			screen.blit(BackGround.image, BackGround.rect)
 			scoretext = pygame.font.Font(None,40).render(str(score), True, (0,255,255))
 			scoretextrect = scoretext.get_rect()
 			scoretextrect = scoretextrect.move(width - scoretextrect.right, 0)
 			screen.blit(scoretext, scoretextrect)
 
+
+ 			#Blit for wall 
 			for i in range(0, len(wall.brickrect)):
 				screen.blit(wall.brick, wall.brickrect[i])    
 
@@ -177,13 +183,15 @@ class Breakout():
 				xspeed = xspeed_init
 				yspeed = yspeed_init                
 				ballrect.center = width / 2, height / 3
-		 
+		 	
+		 	#blit for bat and ball 
 			screen.blit(ball, ballrect)
 			screen.blit(bat, batrect)
 			pygame.display.flip()
 
 class Wall():
 
+		#creating each brick and determining brick length 
 	def __init__(self):
 		self.brick = pygame.image.load(os.path.join(image_path, 'editbrick.png')).convert_alpha()
 		brickrect = self.brick.get_rect()
@@ -191,11 +199,11 @@ class Wall():
 		self.brickheight = brickrect.bottom - brickrect.top             
 
 	def build_wall(self, width):        
-		xpos = 0
+		xpos = 0 					
 		ypos = 60
 		adj = 0
 		self.brickrect = []
-		for i in range (0, int(2*width/self.bricklength)):           
+		for i in range (0, int(2*width/self.bricklength)):   #creating the wall scaled to screen size         
 			if xpos > width:
 				if adj == 0:
 					adj = self.bricklength / 2
