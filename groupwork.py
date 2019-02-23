@@ -18,6 +18,7 @@ Detecting simultaneous keystrokes: https://stackoverflow.com/questions/47935303/
 """
 
 import sys, pygame, random, time, os
+from sys import platform
 
 current_path = os.path.dirname(__file__) # Where your .py file is located
 resource_path = os.path.join(current_path, 'resources') # The resource folder path
@@ -55,9 +56,12 @@ class Ball:
 
 # Pong game
 class Groupwork:
-	# Sets classes and initial properties, receives screen, OS-specific cursor and functinoality, background for refreshing.
-	def __init__(self, screen, cursor, BackGround, mac):
-		self.mac = mac
+	# Sets classes and initial properties, receives screen, OS-specific cursor, background for refreshing.
+	def __init__(self, screen, cursor, BackGround):
+		# Detects OS for OS-specific functionality
+		self.mac = False 
+		if platform == "darwin":
+			self.mac = True
 		self.screen = screen 
 		self.BackGround = BackGround
 

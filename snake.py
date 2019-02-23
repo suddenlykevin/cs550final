@@ -17,6 +17,7 @@ https://pythonspot.com/snake-with-pygame/
 """
 
 import sys, pygame, random, time, os
+from sys import platform
 
 current_path = os.path.dirname(__file__) # Where your .py file is located
 resource_path = os.path.join(current_path, 'resources') # The resource folder path
@@ -58,11 +59,14 @@ class Apple:
 
 # Actual game class
 class Snake:
-	# Sets classes and initial properties, receives screen, OS-specific cursor and functionality, and screenshot files from home.py
-	def __init__(self, screen, cursor, BackGround, mac):
+	# Sets classes and initial properties, receives screen, OS-specific cursor, and screenshot files from home.py
+	def __init__(self, screen, cursor, BackGround):
+		# Detects OS for OS-specific functionality
+		self.mac = False 
+		if platform == "darwin":
+			self.mac = True
 		pygame.mouse.set_visible(0) # Sets mouse invisible
 		# Properties used for blitting objects in play and pause functions
-		self.mac = mac
 		self.screen = screen 
 		self.BackGround = BackGround
 		self.appleSprite = cursor

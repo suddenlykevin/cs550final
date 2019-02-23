@@ -17,6 +17,7 @@ http://www.varesano.net/blog/fabio/capturing%20screen%20image%20python%20and%20p
 """
 
 import sys, pygame, random, time, os
+from sys import platform
 
 current_path = os.path.dirname(__file__) # Where your .py file is located
 resource_path = os.path.join(current_path, 'resources') # The resource folder path
@@ -24,7 +25,7 @@ image_path = os.path.join(resource_path, 'images') # The image folder path
 
 class Breakout():
    
-	def main(self, screen, cursor, BackGround,mac): #Set some inital constants 
+	def main(self, screen, cursor, BackGround): #Set some inital constants 
 		xspeed_init = 15
 		yspeed_init = 15
 		max_lives = 5
@@ -33,6 +34,11 @@ class Breakout():
 
 		infosize = pygame.display.Info() #info to make the display the correct size 
 		size = width, height = int(infosize.current_w), int(infosize.current_h)
+
+		# Detects OS for OS-specific functionality
+		mac = False 
+		if platform == "darwin":
+			mac = True
 
 		bat = pygame.image.load(os.path.join(image_path, 'editbat.png')).convert_alpha() #loading and scalling the bat 
 		bat = pygame.transform.scale(bat, (int(infosize.current_w*0.1),int(infosize.current_h*0.05)))

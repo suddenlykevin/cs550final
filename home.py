@@ -63,7 +63,6 @@ from groupwork import Groupwork
 current_path = os.path.dirname(__file__) # Where your .py file is located
 resource_path = os.path.join(current_path, 'resources') # The resource folder path
 image_path = os.path.join(resource_path, 'images') # The image folder path
-mac = False # if mac is True, functionality differs slightly (minimize/iconify doesn't work)
 
 pygame.init()
 pygame.font.init()
@@ -154,7 +153,7 @@ class Home:
 	
 	# Function opens Snake with relevant properties
 	def opensnake(self):
-		snake = Snake(self.screen,self.cursor,self.BackGround,mac) # allows Snake to manipulate screen, blit cursor and background
+		snake = Snake(self.screen,self.cursor,self.BackGround) # allows Snake to manipulate screen, blit cursor and background
 		snake.play() 
 		pygame.mouse.set_visible(1) # once Snake returns, mouse is visible again
 		time.sleep(1) # buffer so ESC does not register twice
@@ -162,12 +161,12 @@ class Home:
 	# Function opens Brickbreaker with relevant properties
 	def openbrick(self):
 		br = Breakout()
-		br.main(self.screen,self.cursor,self.BackGround,mac)
+		br.main(self.screen,self.cursor,self.BackGround)
 		pygame.mouse.set_visible(1)
 		time.sleep(1)
 
 	def opengroup(self):
-		group = Groupwork(self.screen,self.cursor,self.BackGround,mac)
+		group = Groupwork(self.screen,self.cursor,self.BackGround)
 		group.play()
 		pygame.mouse.set_visible(1)
 		time.sleep(1)
