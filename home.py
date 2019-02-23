@@ -20,8 +20,8 @@ I, M and W, X to control their respective paddles. The mouse object, that is
 used in all games, changes depending on the user's OS. While playing, 
 the user can minimize and pause the game by pressing esc and resume by 
 reopening the window and pressing any movement key. The user can exit back to 
-the main menu using esc when each game is over. On the main menu, the user can 
-quit by pressing esc. There are two examples of translucency in this game,
+the main menu using esc when each game is over or paused. On the main menu, the 
+user can quit by pressing esc. There are two examples of translucency in this game,
 one using the alpha property of png files, and another using RGB manipulations
 of the background to emulate transparency and offset to emulate "diffraction" of light.
 
@@ -146,7 +146,6 @@ class Home:
 		if platform == "darwin":
 			self.cursor = pygame.image.load(os.path.join(image_path, 'cursor1.png')).convert_alpha()
 			self.cursor = pygame.transform.scale(self.cursor, (15,22))
-			mac = True # to change functionality on different OSs
 		elif platform == "win32" or platform == "win64":
 			self.cursor = pygame.image.load(os.path.join(image_path, 'cursor.png')).convert_alpha()
 			self.cursor = pygame.transform.scale(self.cursor, (int(pygame.display.Info().current_w*0.0065),int(pygame.display.Info().current_w*0.00975)))
