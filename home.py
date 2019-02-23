@@ -10,8 +10,8 @@ The goal of this project was to hide games in a user's screen so that they
 could be played without other people knowing. Once the program is run through 
 terminal, the user has 3 seconds to go to their chosen background window before 
 the program takes a screenshot that will be used as the backgroud of the game. 
-There are to games to choose from, a "sneaky" snake game and a "buried" brick 
-breaker game. This can be chosen through the GUI after launch. The snake game 
+There are three games to choose from, a "sneaky" snake game, a "buried" brick 
+breaker game, and a multiplayer "groupwork" game. The snake game 
 is controlled using 'W' for up, 'M' for down, 'L' for left and 'A' for right. 
 These controls were chosen to make it less obvious that the user is playing 
 a game. For brick breaker the controls are just the arrow keys, left arrow 
