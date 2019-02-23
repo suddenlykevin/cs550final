@@ -9,7 +9,7 @@ W - up
 A - left
 M - down
 L - right
-ESC - pause when game is running, exit to main menu when game is over
+ESC - pause when game is running, exit to main menu when game is paused/over
 
 Functionality derived from tutorial:
 https://pythonspot.com/snake-with-pygame/
@@ -105,7 +105,8 @@ class Snake:
 					elif event.key == pygame.K_ESCAPE: # if player presses "escape," game pauses and minimizes
 						if not self.mac: # iconify crashes mac app
 							pygame.display.iconify()
-						self.pause(0)
+						if self.pause(0): # if user presses esc twice, then game returns to main menu
+							return
 			self.player.move(self.current) # moves player (see move() function)
 
 			# wraps snake around screen if segment coordinates exceed width or height domains
@@ -153,12 +154,12 @@ class Snake:
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
 					sys.exit()
-				# on keystroke, if game is just paused, escape/directional keys will return to self.play(). Else, escape returns to self.play() then home.py
+				# on keystroke, if game is just paused, directional keys will return to self.play(). Escape always returns to self.play() then home.py
 				elif event.type == pygame.KEYDOWN:
 					if event.key == pygame.K_ESCAPE:
-						return
+						return True
 					if event.key in [pygame.K_w,pygame.K_m,pygame.K_a,pygame.K_l] and status == 0:
-						return
+						return False
 			# if game is over, score and text is displayed on screen.
 			if status == 1:
 				msg = pygame.font.Font(os.path.join(resource_path, 'Linebeam.ttf'),30).render("Game Over! Score: " + str(self.player.score), True, (0,255,255))

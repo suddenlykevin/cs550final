@@ -6,7 +6,7 @@ Adapted by Knute & Kevin
 Control Scheme:
 LEFT = left
 RIGHT = right
-ESC = pause when game is running, exit to main menu when game is over
+ESC = pause when game is running, exit to main menu when game is paused/over
 
 # LIVES: 5
 
@@ -75,7 +75,8 @@ class Breakout():
 					if event.key == pygame.K_ESCAPE: 
 						if not mac: # minimizes app if not mac (Iconify crashes macOS)
 							pygame.display.iconify()
-						self.pause()
+						if self.pause(): # if ESC is pressed again, return to main menu
+							return
 					if event.key == pygame.K_LEFT:                        
 						batrect = batrect.move(-bat_speed, 0)     
 						if (batrect.left < 0):                           
@@ -211,9 +212,9 @@ class Breakout():
 					sys.exit()
 				elif event.type == pygame.KEYDOWN:
 					if event.key == pygame.K_ESCAPE:
-						return
+						return True
 					if event.key in [pygame.K_LEFT,pygame.K_RIGHT]:
-						return
+						return False
 		screen.blit(BackGround.image, BackGround.rect)
 		scoretext = pygame.font.Font(os.path.join(resource_path, 'Linebeam.ttf'),40).render(str(score), True, (0,255,255))
 		scoretextrect = scoretext.get_rect()

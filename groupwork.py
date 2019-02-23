@@ -10,7 +10,7 @@ W - Player 1 Up
 X - Player 1 Down
 I - Player 2 Up
 M - Player 2 Down
-ESC - pause when game is running, exit to main menu when game is over
+ESC - pause when game is running, exit to main menu when game is paused/over
 
 Sources (excl. redundant sources in other files -- snake.py, brick.py, home.py):
 Detecting simultaneous keystrokes: https://stackoverflow.com/questions/47935303/press-multiple-keys-at-once
@@ -110,7 +110,8 @@ class Groupwork:
 			if keys[pygame.K_ESCAPE]: # if player presses "escape," game pauses and minimizes
 				if not self.mac: # iconify crashes mac app
 					pygame.display.iconify()
-				self.pause(0)
+				if self.pause(0): # self.pause() will return you to main menu if ESC is pressed again.
+					return
 
 			# Detects if ball collides with paddle based on ball's borders and paddle's borders
 			if (self.ball.coords[1] <= self.player2.coords[1]+self.height/5 and \
@@ -189,9 +190,9 @@ class Groupwork:
 				# on keystroke, if game is just paused, escape/directional keys will return to self.play(). Else, escape returns to self.play() then home.py/main menu
 				elif event.type == pygame.KEYDOWN:
 					if event.key == pygame.K_ESCAPE:
-						return
+						return True
 					if event.key in [pygame.K_w,pygame.K_x,pygame.K_i,pygame.K_m] and status == 0:
-						return
+						return False
 			# if status = 1 or 2, game is over and the opposite player won. Score and text displayed on screen
 			if status == 1:
 				msg = pygame.font.Font(os.path.join(resource_path, 'Linebeam.ttf'),30).render("Player 2 Wins! Rally: " + str(self.score), True, (0,255,255))
