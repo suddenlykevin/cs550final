@@ -119,8 +119,11 @@ class Groupwork:
 				self.ball.coords[0] <= 20): 
 				# Reverse ball velocity
 				self.ball.xspeed = -self.ball.xspeed
-				# Offset from center of paddle determines ball trajectory
-				offset = self.ball.coords[1]+(self.ballSprite.get_rect().size[1]/2) - (self.player1.coords[1]+self.height/10)
+				# Offset from center of paddle determines ball trajectory (offset depends on which paddle you are colliding with)
+				if ball.coords[0]<60:
+					offset = self.ball.coords[1]+(self.ballSprite.get_rect().size[1]/2) - (self.player1.coords[1]+self.height/10)
+				else:
+					offset = self.ball.coords[1]+(self.ballSprite.get_rect().size[1]/2) - (self.player2.coords[1]+self.height/10)
 				# If offset upwards, then ball reflects at upward angle, if offset downwards, ball reflects at downward angle
 				if offset > 0:
 					if offset > 30:
