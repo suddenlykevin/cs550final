@@ -3,6 +3,8 @@
 
 Final Project for CS550 by Kevin Xie and Knute Broady 
 
+Problem: I'M BORED IN CLASS!
+
 The goal of this project was to hide games in a user's screen so that they 
 could be played without other people knowing. Once the program is run through 
 terminal, the user has 3 seconds to go to their chosen background window before 
@@ -12,11 +14,15 @@ breaker game. This can be chosen through the GUI after launch. The snake game
 is controlled using 'W' for up, 'M' for down, 'L' for left and 'A' for right. 
 These controls were chosen to make it less obvious that the user is playing 
 a game. For brick breaker the controls are just the arrow keys, left arrow 
-for left, right arrow for right. The mouse object, that is used in both games, 
-changes depends on the user's OS. While playing, the user can minimize and 
-pause the game by pressing esc and resume by reopening the window and pressing 
-any movement key. The user can exit back to the main menu using esc when each 
-game is over. On the main menu, the user can quit by pressing esc. 
+for left, right arrow for right. For groupwork (2-player Pong), players use
+I, M and W, X to control their respective paddles. The mouse object, that is 
+used in all games, changes depending on the user's OS. While playing, 
+the user can minimize and pause the game by pressing esc and resume by 
+reopening the window and pressing any movement key. The user can exit back to 
+the main menu using esc when each game is over. On the main menu, the user can 
+quit by pressing esc. There are two examples of translucency in this game,
+one using the alpha property of png files, and another using RGB manipulations
+of the background to emulate transparency and offset to emulate "diffraction" of light.
 
 Universal Sources: (applies to all files)
 https://www.pygame.org/docs/
@@ -51,6 +57,7 @@ from sys import platform
 # links to other game files
 from snake import Snake 
 from brick import Breakout
+from groupwork import Groupwork
 
 current_path = os.path.dirname(__file__) # Where your .py file is located
 resource_path = os.path.join(current_path, 'resources') # The resource folder path
@@ -158,6 +165,12 @@ class Home:
 		pygame.mouse.set_visible(1)
 		time.sleep(1)
 
+	def opengroup(self):
+		group = Groupwork(self.screen,self.cursor,self.BackGround,mac)
+		group.play()
+		pygame.mouse.set_visible(1)
+		time.sleep(1)
+
 	# Initializes menu on screen
 	def play(self):
 		# for "breathing" title screen
@@ -174,6 +187,7 @@ class Home:
 				elif event.type == pygame.KEYDOWN:
 					if event.key == pygame.K_ESCAPE:
 						sys.exit()
+
 			# "Breathing" title screen; large "CLasswork" text moves from black to white and vice versa in a loop
 			t+=1
 			u=t//255
@@ -184,9 +198,10 @@ class Home:
 			TextRect.center = ((pygame.display.Info().current_w/2),(pygame.display.Info().current_h/2))
 
 			# Generates buttons using button() function defined above. Connects functions to execute Snake/Brickbreaker
-			button(self.screen,"SNEAKY SNAKE", (pygame.display.Info().current_w/5), (pygame.display.Info().current_h*4/5), 300, 50, self.BackGround.scrnMod, self.BackGround.scrnMod1, self.opensnake)
-			button(self.screen,"BURIED BRICK", (pygame.display.Info().current_w*3/5), (pygame.display.Info().current_h*4/5), 300, 50, self.BackGround.scrnMod, self.BackGround.scrnMod1, self.openbrick)
-			
+			button(self.screen,"SNEAKY SNAKE", (pygame.display.Info().current_w/5), (pygame.display.Info().current_h*3/4), pygame.display.Info().current_w/5, 50, self.BackGround.scrnMod, self.BackGround.scrnMod1, self.opensnake)
+			button(self.screen,"BURIED BRICK", (pygame.display.Info().current_w*3/5), (pygame.display.Info().current_h*3/4), pygame.display.Info().current_w/5, 50, self.BackGround.scrnMod, self.BackGround.scrnMod1, self.openbrick)
+			button(self.screen,"GROUPWORK", (pygame.display.Info().current_w*2/5), (pygame.display.Info().current_h*1/5), pygame.display.Info().current_w/5, 50, self.BackGround.scrnMod, self.BackGround.scrnMod1, self.opengroup)
+
 			# Blits title on screen
 			self.screen.blit(TextSurf,TextRect)
 			pygame.display.flip()

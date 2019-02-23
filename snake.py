@@ -1,18 +1,22 @@
 """
 Snake
-Kevin & Knute
+by Kevin & Knute
+
+Original code for a transparent game of Snake.
+
+Controls:
+W - up
+A - left
+M - down
+L - right
+ESC - pause when game is running, exit to main menu when game is over
 
 Functionality derived from tutorial:
 https://pythonspot.com/snake-with-pygame/
 
-
 """
 
-import pygame
-import sys
-import os
-from transforms import RGBTransform
-import random
+import sys, pygame, random, time, os
 
 current_path = os.path.dirname(__file__) # Where your .py file is located
 resource_path = os.path.join(current_path, 'resources') # The resource folder path
@@ -130,7 +134,7 @@ class Snake:
 				while self.apple.coords in self.player.coords:
 					self.apple.reroll()
 			# sets score text based on player.score
-			scoretext = pygame.font.Font(None,40).render(str(self.player.score), True, (0,255,255))
+			scoretext = pygame.font.Font(os.path.join(resource_path, 'Linebeam.ttf'),30).render(str(self.player.score), True, (0,255,255))
 			scoretextrect = scoretext.get_rect()
 			scoretextrect = scoretextrect.move(pygame.display.Info().current_w - scoretextrect.right, 0)
 
@@ -153,8 +157,8 @@ class Snake:
 						return
 			# if game is over, score and text is displayed on screen.
 			if status == 1:
-				msg = pygame.font.Font(None,50).render("Game Over! Score: " + str(self.player.score), True, (0,255,255))
+				msg = pygame.font.Font(os.path.join(resource_path, 'Linebeam.ttf'),30).render("Game Over! Score: " + str(self.player.score), True, (0,255,255))
 				msgrect = msg.get_rect()
-				msgrect = msgrect.move((msgrect.center[0]), 0)
+				msgrect = msgrect.move(0, 0)
 				self.screen.blit(msg, msgrect)
 			pygame.display.flip() # displays screen

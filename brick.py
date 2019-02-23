@@ -1,6 +1,14 @@
 
 """ 
 Code based on Breakout V 0.1 June 2009 by John Cheetham. Can be found at http://www.johncheetham.com/projects/breakout. 
+Adapted by Knute & Kevin
+
+Control Scheme:
+LEFT = left
+RIGHT = right
+ESC = pause when game is running, exit to main menu when game is over
+
+# LIVES: 5
 
 Sources for screenshot capture: 
 https://stackoverflow.com/questions/48248405/cannot-write-mode-rgba-as-jpeg
@@ -8,8 +16,7 @@ https://stackoverflow.com/questions/25202092/pil-and-pygame-image
 http://www.varesano.net/blog/fabio/capturing%20screen%20image%20python%20and%20pil%20windows
 """
 
-import sys, pygame, random,time, os
-from PIL import Image, ImageGrab
+import sys, pygame, random, time, os
 
 current_path = os.path.dirname(__file__) # Where your .py file is located
 resource_path = os.path.join(current_path, 'resources') # The resource folder path
@@ -54,13 +61,15 @@ class Breakout():
 			# 60 frames per second
 			clock.tick(60)
 
-			# process key presses
+			# process key presses (ESC=pause, LEFT = left, RIGHT = right)
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
 					sys.exit()
 				if event.type == pygame.KEYDOWN:
-					if event.key == pygame.K_ESCAPE:
-						sys.exit()
+					if event.key == pygame.K_ESCAPE: 
+						if not mac: # minimizes app if not mac (Iconify crashes macOS)
+							pygame.display.iconify()
+						self.pause()
 					if event.key == pygame.K_LEFT:                        
 						batrect = batrect.move(-bat_speed, 0)     
 						if (batrect.left < 0):                           
@@ -91,7 +100,7 @@ class Breakout():
 						xspeed = -7
 					elif offset < -23:
 						xspeed = -6
-					elif xspeed < -17:
+					elif offset < -17:
 						xspeed = -5     
 					  
 			# move bat/ball
@@ -117,10 +126,10 @@ class Breakout():
 
 				#prcesses losing 
 				if lives == 0:                    
-					msg = pygame.font.Font(None,50).render("Game Over! Score: " + str(score), True, (0,255,255))
+					msg = pygame.font.Font(os.path.join(resource_path, 'Linebeam.ttf'),30).render("Game Over! Score: " + str(score), True, (0,255,255))
 					screen.blit(BackGround.image, BackGround.rect)
 					msgrect = msg.get_rect()
-					msgrect = msgrect.move((msgrect.center[0]), 0)
+					msgrect = msgrect.move(0, 0)
 					screen.blit(msg, msgrect)
 					pygame.display.flip()
 					# process key presses
@@ -167,7 +176,7 @@ class Breakout():
 				score += 10
 			#continue to blit the background image (screenshot)	and the score text 
 			screen.blit(BackGround.image, BackGround.rect)
-			scoretext = pygame.font.Font(None,40).render(str(score), True, (0,255,255))
+			scoretext = pygame.font.Font(os.path.join(resource_path, 'Linebeam.ttf'),30).render(str(score), True, (0,255,255))
 			scoretextrect = scoretext.get_rect()
 			scoretextrect = scoretextrect.move(width - scoretextrect.right, 0)
 			screen.blit(scoretext, scoretextrect)
@@ -188,6 +197,37 @@ class Breakout():
 			screen.blit(ball, ballrect)
 			screen.blit(bat, batrect)
 			pygame.display.flip()
+
+	def pause(self): 
+		while 1:
+			for event in pygame.event.get():
+				if event.type == pygame.QUIT:
+					sys.exit()
+				elif event.type == pygame.KEYDOWN:
+					if event.key == pygame.K_ESCAPE:
+						return
+					if event.key in [pygame.K_LEFT,pygame.K_RIGHT]:
+						return
+		screen.blit(BackGround.image, BackGround.rect)
+		scoretext = pygame.font.Font(os.path.join(resource_path, 'Linebeam.ttf'),40).render(str(score), True, (0,255,255))
+		scoretextrect = scoretext.get_rect()
+		scoretextrect = scoretextrect.move(width - scoretextrect.right, 0)
+		screen.blit(scoretext, scoretextrect)
+
+		for i in range(0, len(wall.brickrect)):
+			screen.blit(wall.brick, wall.brickrect[i])    
+
+		# if wall completely gone then rebuild it
+		if wall.brickrect == []:              
+			wall.build_wall(width)                
+			xspeed = xspeed_init
+			yspeed = yspeed_init                
+			ballrect.center = width / 2, height / 3
+	 
+		screen.blit(ball, ballrect)
+		screen.blit(bat, batrect)
+		pygame.display.flip()
+
 
 class Wall():
 
